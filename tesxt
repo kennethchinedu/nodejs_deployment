@@ -1,0 +1,63 @@
+version: '3'
+
+services:
+  # MongoDB 
+  mongo_db:
+    container_name: mongodb_container
+    image: mongo:latest
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: 1234
+    volumes:
+      - mongo_db:/data/db 
+
+  api: 
+    build: .
+    ports: 
+      - "4000:3000"
+    environment:
+      - PORT=3000
+      - MONGODB_URI=mongodb://admin:1234@mongo_db:27017/admin
+      - DB_NAME=my_db
+    depends_on:
+      - mongo_db
+
+volumes:
+  mongo_db: {}
+
+
+
+
+
+
+
+##main
+
+
+version: '3'
+
+services:
+  # MongoDB 
+  mongo_db:
+    container_name: mongodb_container
+    image: mongo:latest
+    restart: always
+    ports:
+      - 2717:27017
+    volumes:
+      - mongo_db:/data/db 
+  #Building the mongodb
+  api: 
+    build: .
+    ports: 
+      - "4000:3000"
+    environment:
+      - PORT=3000
+      - MONGODB_URI=mongodb://mongo_db:27017
+      - DB_NAME=my_db
+    depends_on:
+      - mongo_db
+
+volumes:
+  mongo_db: {}
